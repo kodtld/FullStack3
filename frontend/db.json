@@ -1,0 +1,49 @@
+{
+  "persons": [
+    {
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523",
+      "id": 2
+    },
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "Mary Poppendieck",
+      "number": "39-23-6423122",
+      "id": 4
+    },
+    {
+      "name": "Petteri Vasikka",
+      "number": "040-342423",
+      "id": 5
+    },
+    {
+      "name": "Dan Maarhuust",
+      "number": "055-49027432",
+      "id": 9
+    },
+    {
+      "name": "Veera Vallen",
+      "number": "4324324",
+      "id": 10
+    },
+    {
+      "name": "Basilika Leipä",
+      "number": "045-4832094",
+      "id": 11
+    },
+    {
+      "name": "Jaakko Hintikka ",
+      "number": "044-4206969",
+      "id": 12
+    },
+    {
+      "name": "Uusi Uuno",
+      "number": "040-5523023",
+      "id": 13
+    }
+  ]
+}
