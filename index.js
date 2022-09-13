@@ -18,7 +18,6 @@ let persons = [
         "name": "Artsa Kallio",
         "number": "39-44-434543543",
         "id": 1
-
     },
     {
       "name": "Ada Lovelace",
