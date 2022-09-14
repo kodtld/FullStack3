@@ -82,10 +82,8 @@ app.get('/api/persons', (req, res) => {
 
 })
 
-app.post('/api/persons', function (req, res) {
-    const randID = Math.floor(Math.random() * 19999);
+app.post('/api/persons',(req, res) =>{
     const body = req.body
-    console.log("backend")
 
     if (!body.name) {
       return res.status(400).json({ 
@@ -99,14 +97,15 @@ app.post('/api/persons', function (req, res) {
       })
     }
 
-    if (persons.find(e => e.name === body.name)){
-      return res.status(400).json({ 
-        error: 'name must be unique' 
-      })
-    }
-
     else {
-      res.send({name:body.name,number:body.number,id:randID})
+      const person = new Person({
+        name: body.name,
+        number: body.number
+      })
+    
+      person.save().then(savedPerson => {
+        res.json(savedPerson)
+      })
     }
     
     })
@@ -119,9 +118,9 @@ app.get('/info', (req, res) => {
     })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
+    Person.findById(req.params.id).then(person => {
     res.json(person)
+  })
     })
 
 app.delete('/api/persons/:id', (req, res) => {
