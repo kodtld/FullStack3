@@ -1,0 +1,2 @@
+MONGODB_URI=mongodb+srv://kxsalmi:Arttulindeman10@cluster0.jflaui0.mongodb.net/PhoneBook?retryWrites=true&w=majority
+PORT=3001

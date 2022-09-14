@@ -8,16 +8,20 @@ const cors = require('cors')
 app.use(express.static('build'))
 
 
+require('dotenv').config()
+
+const Person = require('./models/person')
 
 morgan.token('body', (req)=>JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-
+/*
 let persons = [
     {
         "name": "Artsa Kallio",
         "number": "39-44-434543543",
         "id": 1
+
     },
     {
       "name": "Ada Lovelace",
@@ -65,13 +69,16 @@ let persons = [
       "id": 10
     }
   ]
+*/
 
 app.get('/',(req, res) => {
   res.send('<h1>Phonebook backend</h1>')
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({}).then(persons => {
+    res.json(persons)
+  })
 
 })
 
@@ -124,7 +131,7 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
     })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
