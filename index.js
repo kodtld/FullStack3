@@ -11,7 +11,6 @@ app.use(express.static('build'))
 require('dotenv').config()
 
 const Person = require('./models/person')
-
 morgan.token('body', (req)=>JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
@@ -84,38 +83,35 @@ app.get('/api/persons', (req, res) => {
 
 app.post('/api/persons',(req, res) =>{
     const body = req.body
-
     if (!body.name) {
       return res.status(400).json({ 
         error: 'name missing' 
       })
     }
-
     if (!body.number) {
       return res.status(400).json({ 
         error: 'number missing' 
       })
     }
-
     else {
       const person = new Person({
         name: body.name,
         number: body.number
       })
-    
       person.save().then(savedPerson => {
         res.json(savedPerson)
       })
     }
-    
     })
 
 app.get('/info', (req, res) => {
-    const length = persons.length;
+  Person.find({}).then(persons => {
+    var length = [persons][0].length;
     const d = new Date();
     let time = d
     res.send(`Phonebook has ${length} contacts </br>${time}`)
-    })
+  })
+ })
 
 app.get('/api/persons/:id', (req, res) => {
     Person.findById(req.params.id).then(person => {
@@ -123,11 +119,27 @@ app.get('/api/persons/:id', (req, res) => {
   })
     })
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-    
-    res.status(204).end()
+  app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+  
+    const person = {
+      name: body.name,
+      number: body.number,
+    }
+  
+    Person.findByIdAndUpdate(req.params.id, person, { new: true })
+      .then(updatedPerson => {
+        res.json(updatedPerson)
+      })
+      .catch(error => next(error))
+  })
+
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
     })
 
 const PORT = process.env.PORT
