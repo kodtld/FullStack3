@@ -14,74 +14,15 @@ const Person = require('./models/person')
 morgan.token('body', (req)=>JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-/*
-let persons = [
-    {
-        "name": "Artsa Kallio",
-        "number": "39-44-434543543",
-        "id": 1
-
-    },
-    {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": 2
-    },
-    {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": 3
-    },
-    {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
-    },
-    {
-      "name": "Petteri Vasikka",
-      "number": "040-342423",
-      "id": 5
-    },
-    {
-      "name": "Dan Maarhuust",
-      "number": "055-49027432",
-      "id": 6
-    },
-    {
-      "name": "Veera Vallen",
-      "number": "4324324",
-      "id": 7
-    },
-    {
-      "name": "Basilika Leipä",
-      "number": "045-4832094",
-      "id": 8
-    },
-    {
-      "name": "Jaakko Hintikka ",
-      "number": "044-4206969",
-      "id": 9
-    },
-    {
-      "name": "Uuli Uuno",
-      "number": "040-5523023",
-      "id": 10
-    }
-  ]
-*/
-
-app.get('/',(req, res) => {
-  res.send('<h1>Phonebook backend</h1>')
-})
-
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
   Person.find({}).then(persons => {
     res.json(persons)
   })
+  .catch(error => next(error))
 
 })
 
-app.post('/api/persons',(req, res) =>{
+app.post('/api/persons',(req, res, next) =>{
     const body = req.body
     if (!body.name) {
       return res.status(400).json({ 
@@ -93,6 +34,7 @@ app.post('/api/persons',(req, res) =>{
         error: 'number missing' 
       })
     }
+
     else {
       const person = new Person({
         name: body.name,
@@ -101,22 +43,28 @@ app.post('/api/persons',(req, res) =>{
       person.save().then(savedPerson => {
         res.json(savedPerson)
       })
+      .catch(error => next(error))
     }
     })
 
-app.get('/info', (req, res) => {
-  Person.find({}).then(persons => {
+app.get('/info', (req, res, next) => {
+  Person.find({})
+  .then(persons => {
     var length = [persons][0].length;
     const d = new Date();
     let time = d
     res.send(`Phonebook has ${length} contacts </br>${time}`)
-  })
+    })
+  .catch(error => next(error))
  })
 
-app.get('/api/persons/:id', (req, res) => {
-    Person.findById(req.params.id).then(person => {
-    res.json(person)
-  })
+app.get('/api/persons/:id', (req, res, next) => {
+    Person.findById(req.params.id)
+    .then(person => {
+      res.json(person)
+      })
+    
+    .catch(error => next(error))
     })
 
   app.put('/api/persons/:id', (req, res, next) => {
@@ -141,6 +89,20 @@ app.delete('/api/persons/:id', (req, res, next) => {
     })
     .catch(error => next(error))
     })
+
+
+  const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return res.status(400).send({ error: 'malformatted id' })
+    }
+  
+    next(error)
+  }
+ 
+  app.use(errorHandler)
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
