@@ -18,7 +18,10 @@ name: {
 
 },
 number: {
-  type: String}
+  type: String,
+  minlength: 8,
+  maxlength: 12,
+  match: /^[(]?[0-9]{2,3}[)]?[-\s\.]?[0-9]{3}[\s\.]?[0-9]{4,6}$/}
 })
   
 personSchema.set('toJSON', {
